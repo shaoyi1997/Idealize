@@ -1,0 +1,6 @@
+[submodule "idealize-api"]
+	path = idealize-api
+	url = https://github.com/shaoyi1997/idealize-api.git
+[submodule "idealize-app"]
+	path = idealize-app
+	url = https://github.com/shaoyi1997/idealize-app.git

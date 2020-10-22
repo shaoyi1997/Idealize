@@ -1,0 +1,59 @@
+version: "3.8"
+services:
+  reverse-proxy:
+    build: ./reverse-proxy
+    networks:
+      - frontend
+      - backend
+    ports:
+      - "80:80"
+    depends_on:
+      - app
+      - api
+
+  app:
+    build: ./idealize-app
+    depends_on:
+      - api
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+    ports:
+      - "3000:3000"
+    networks:
+      - frontend
+    command: yarn start
+
+  api:
+    build: ./idealize-api
+    depends_on:
+      - postgres
+    environment:
+      DATABASE_URL: postgres://idealize:idealize@postgres:5432/idealize
+      NODE_ENV: production
+      PORT: 8080
+    ports:
+      - "8080:8080"
+    networks:
+      - backend
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    command: yarn start:dev
+
+  postgres:
+    image: postgres:11.9
+    ports:
+      - "5432:5432"
+    networks:
+      - backend
+    environment:
+      POSTGRES_USER: idealize
+      POSTGRES_PASSWORD: idealize
+      POSTGRES_DB: idealize
+
+networks:
+  frontend:
+  backend:
+
+volumes:
+  pgdata:
