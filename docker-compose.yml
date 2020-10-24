@@ -12,9 +12,6 @@ services:
     depends_on:
       - app
       - api
-    links:
-      - app:app
-      - api:api
 
   app:
     image: shaoyi1997/idealize-app:latest
@@ -22,8 +19,6 @@ services:
     restart: always
     depends_on:
       - api
-    links:
-      - api:api
     networks:
       - frontend
     ports:
@@ -36,8 +31,6 @@ services:
     restart: always
     depends_on:
       - postgres
-    links:
-      - postgres:postgres
     environment:
       DATABASE_URL: postgres://idealize:idealize@postgres:5432/idealize
       NODE_ENV: production

@@ -15,7 +15,7 @@ deploy:
   provider: elasticbeanstalk
   region: ap-southeast-1
   app: idealize
-  env: idealize-env
+  env: idealize-env-2
   bucket_name: elasticbeanstalk-ap-southeast-1-720343421149
   bucket_path: idealize
   on:
