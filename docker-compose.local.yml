@@ -10,35 +10,48 @@ services:
     depends_on:
       - app
       - api
+    links:
+      - app:app
+      - api:api
 
   app:
-    build: ./idealize-app
+    build:
+      context: ./idealize-app
+      dockerfile: Dockerfile
+    stdin_open: true
+    tty: true
     depends_on:
       - api
+    links:
+      - api:api
     environment:
-      NODE_ENV: production
+      NODE_ENV: development
       PORT: 3000
     ports:
       - "3000:3000"
     networks:
       - frontend
-    command: yarn start
+    volumes:
+      # - ./idealize-app:/app/
+      - app_node_modules:/app/node_modules
 
   api:
     build: ./idealize-api
     depends_on:
       - postgres
+    links:
+      - postgres:postgres
     environment:
       DATABASE_URL: postgres://idealize:idealize@postgres:5432/idealize
-      NODE_ENV: production
+      NODE_ENV: development
       PORT: 8080
     ports:
       - "8080:8080"
     networks:
       - backend
     volumes:
-      - pgdata:/var/lib/postgresql/data
-    command: yarn start:dev
+      # - ./idealize-api:/app/
+      - api_node_modules:/app/node_modules
 
   postgres:
     image: postgres:11.9
@@ -50,6 +63,8 @@ services:
       POSTGRES_USER: idealize
       POSTGRES_PASSWORD: idealize
       POSTGRES_DB: idealize
+    volumes:
+      - pgdata:/var/lib/postgresql/data
 
 networks:
   frontend:
@@ -57,3 +72,5 @@ networks:
 
 volumes:
   pgdata:
+  api_node_modules:
+  app_node_modules:

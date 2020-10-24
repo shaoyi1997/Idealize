@@ -1,0 +1,24 @@
+services:
+  - docker
+script:
+  - docker build -t shaoyi1997/idealize-api ./idealize-api
+  - docker build -t shaoyi1997/idealize-app ./idealize-app -f ./idealize-app/Dockerfile.production
+  - docker build -t shaoyi1997/idealize-reverse-proxy ./reverse-proxy
+  # Log in to the docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # Take those images and push them to docker hub
+  - docker push shaoyi1997/idealize-api
+  - docker push shaoyi1997/idealize-app
+  - docker push shaoyi1997/idealize-reverse-proxy
+
+deploy:
+  provider: elasticbeanstalk
+  region: ap-southeast-1
+  app: idealize
+  env: idealize-env
+  bucket_name: elasticbeanstalk-ap-southeast-1-720343421149
+  bucket_path: idealize
+  on:
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key: $AWS_SECRET_KEY
